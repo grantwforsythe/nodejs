@@ -2,38 +2,24 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const { request } = require('http');
+
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
 const app = express();
 const port = 3000
 
-// TODO: See if the below line actually allows the static files to be accessed
-// app.use('/static', express.static(path.join(__dirname, 'public')));
+// Middleware that allows responses to be parsed
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.get('/', (request, response) => {
-    response.send('Hello World!');
+// Add the routes
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
+
+app.use((request, response, next) => {
+    response.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
 });
 
-app.get('/name', (request, response) => {
-    response.send(`
-        <form action="/" method="POST">
-            <input type="text" name="name">
-            <button type="submit">Submit</button>
-        </form>
-    `);
-});
-
-app.post('/', (request, response) => {
-    const name = request.body.name;
-    console.log(`Name: ${name}`);
-    response.redirect('/');
-});
-
-app.get('/redirect', (request, response) => {
-    response.redirect('/');
-});
-
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log(`App listening on port ${port}`);
 });
