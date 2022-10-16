@@ -11,6 +11,8 @@ const port = 3000
 
 // Middleware that allows responses to be parsed
 app.use(bodyParser.urlencoded({extended: false}));
+// Makes the static public folder accessible to the all documents 
+app.use(express.static(path.join(__dirname, 'public'))); 
 
 // Add the routes
 app.use('/admin', adminRoutes);
@@ -21,5 +23,5 @@ app.use((request, response, next) => {
 });
 
 app.listen(port, () => {
-    console.log(`App listening on port ${port}`);
+    console.log(`App live on localhost:${port}`);
 });
